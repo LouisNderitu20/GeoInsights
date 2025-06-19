@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-lg px-4 py-3" id="mainNavbar">
+ <a class="navbar-brand fw-bold text-white me-auto" href="#">
+    <img src="cropped_circle_image (1).png" alt="Your Logo Alt Text" style="height: 50px; margin-right: 10px; vertical-align: middle;">
+    GeoInsights
+</a>
+        <div class="collapse navbar-collapse justify-content-center" id="mainNav">
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="map.html">Map View</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <li class="nav-item align-items-center me-3 d-none" id="loggedInUserSection">
+                    <span class="nav-link" id="helloUserText">
+                        <i class="bi bi-person-circle me-1"></i> Hello, User!
+                    </span>
+                    <button class="btn btn-sm btn-outline-light ms-2" id="signOutButton">Sign Out</button>
+                </li>
+                <li class="nav-item" id="authLinksSection">
+                    <a class="nav-link" href="login.html">Login</a>
+                </li>
+                <li class="nav-item" id="registerLinkSection">
+                    <a class="nav-link" href="register.html">Register</a>
+                </li>
+            </ul>
+
+            <div class="form-check form-switch ms-2" id="themeToggleWrapper">
+                <input class="form-check-input" type="checkbox" id="themeToggle" />
+                <label class="form-check-label text-white ms-2" for="themeToggle" id="themeLabel">☀️</label>
+            </div>
+        </div>
+
+        <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>

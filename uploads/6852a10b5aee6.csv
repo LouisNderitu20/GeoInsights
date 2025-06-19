@@ -1,0 +1,9 @@
+latitude,longitude,region,density,vector,year,description
+-0.0236,37.9062,Rift Valley,High,Anopheles,2023,Malaria outbreak reported near Nakuru
+-1.2863,36.8172,Nairobi,Medium,Aedes,2024,Dengue fever cases increasing in urban areas
+0.5144,35.2690,Western,Low,Tsetse,2022,Sleeping sickness isolated cases
+-4.0437,39.6682,Coast,High,Anopheles,2023,Mosquito control efforts in Mombasa
+-0.4900,34.7679,Nyanza,Medium,Anopheles,2024,Swamp vector control program
+0.5752,34.5513,Western,Low,Culex,2023,West Nile virus surveillance
+-1.7000,37.3000,Eastern,Medium,Anopheles,2022,Rural malaria prevention initiatives
+0.0381,37.5854,Central,Low,Aedes,2024,Chikungunya concerns in populated zones

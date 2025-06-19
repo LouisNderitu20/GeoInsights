@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About | GeoInsights</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="cropped_circle_image (1).png" type="image/x-icon">
+  <style>
+    :root {
+      --gi-primary: #0f4c81;
+      --gi-accent: #1cc88a;
+      --gi-bg: #f8f9fc;
+      --gi-card-bg: #ffffff;
+      --gi-font: 'Inter', sans-serif;
+      --gi-text-color-light: #212529; /* Explicit text color for light mode */
+    }
+
+    [data-bs-theme="dark"] {
+      --gi-primary: #0b3a60; /* Darker primary for dark mode header */
+      --gi-bg: #0e0e0e; /* Dark mode body background */
+      --gi-card-bg: #1a1a1a; /* Dark mode card background */
+      --gi-text-color-dark: #e0e0e0; /* Explicit text color for dark mode */
+    }
+
+    body {
+      font-family: var(--gi-font);
+      background-color: var(--gi-bg);
+      color: var(--gi-text-color-light); /* Use variable for body text color */
+      transition: background-color 0.3s ease, color 0.3s ease;
+      scroll-behavior: smooth;
+    }
+
+    [data-bs-theme="dark"] body {
+      color: var(--gi-text-color-dark); /* Apply dark mode text color */
+    }
+
+    /* Navbar styling with custom primary color, always keeping text white */
+    .navbar { /* Removed #mainNavbar ID as it's not strictly necessary if applied to all navbars */
+      background-color: var(--gi-primary); /* This will change based on data-bs-theme */
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar-brand,
+    .nav-link,
+    .form-check-label {
+      color: #fff !important; /* Force white text for navbar items regardless of theme */
+    }
+
+    /* Ensure active nav link retains white color */
+    .nav-link.active {
+      color: #fff !important;
+    }
+
+
+    .hero {
+      background: linear-gradient(135deg, var(--gi-primary), #145374);
+      color: #fff;
+      padding: 6rem 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 150%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+      transform: translateX(-50%);
+      z-index: 0;
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero .btn {
+      transition: all 0.3s ease;
+    }
+
+    .hero .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .section-title {
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    /* Sections that should have the main background color */
+    section:not(.hero):not(footer) {
+      background-color: var(--gi-bg);
+      color: var(--bs-body-color); /* Use Bootstrap's variable for general text color */
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Specific overrides for sections with `bg-light` class */
+    .bg-light {
+        background-color: var(--gi-bg) !important; /* Use --gi-bg directly for this class */
+    }
+
+    [data-bs-theme="dark"] .bg-light {
+      background-color: var(--gi-dark-bg) !important; /* Apply dark background to bg-light in dark mode */
+    }
+
+    .bio-card {
+      border: none;
+      border-radius: 0.75rem;
+      background-color: var(--gi-card-bg); /* Use custom card background */
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      padding: 2rem;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      color: inherit; /* Inherit color from parent (body) or use specific variable */
+    }
+
+    .bio-card:hover {
+      transform: translateY(-5px);
+    }
+
+    [data-bs-theme="dark"] .bio-card {
+      background-color: var(--gi-dark-card); /* Apply dark card background */
+      color: var(--gi-text-color-dark); /* Apply dark text color */
+    }
+
+    .bio-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+    }
+
+    footer {
+      background-color: var(--gi-primary); /* Footer background matches navbar */
+      color: #fff;
+      padding: 2rem 1rem;
+      text-align: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .text-muted {
+      color: var(--bs-secondary-color) !important; /* Use Bootstrap's secondary color */
+    }
+
+    [data-bs-theme="dark"] .text-muted {
+      color: #bbbbbb !important; /* Override text-muted for dark mode */
+    }
+
+    .form-switch {
+      display: flex;
+      align-items: center;
+    }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    .fade-in.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+  
+
+  <section class="hero">
+    <div class="container">
+      <h1 class="display-4 fw-bold">About GeoInsights</h1>
+      <p class="lead mt-3">Empowering public health through smarter geospatial intelligence.</p>
+    </div>
+  </section>
+
+  <section class="py-5">
+    <div class="container text-center">
+      <h2 class="section-title">Who We Are</h2>
+      <p class="mb-4">
+        GeoInsights is a geospatial data platform developed to track vector-borne disease patterns, monitor regional trends, and provide real-time analytics for public health professionals, researchers, and decision-makers.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-5 bg-light" id="team">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="section-title">Meet the Team</h2>
+        <p class="text-muted">Dedicated professionals powering GeoInsights</p>
+      </div>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+          <div class="bio-card">
+            <img src="https://via.placeholder.com/100" alt="Team member" />
+            <h5 class="fw-bold">Dr. Amina Yusuf</h5>
+            <p class="text-muted">Lead Epidemiologist</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="bio-card">
+            <img src="https://via.placeholder.com/100" alt="Team member" />
+            <h5 class="fw-bold">Louis Nderitu</h5>
+            <p class="text-muted">Frontend Developer & UI Designer</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="bio-card">
+            <img src="https://via.placeholder.com/100" alt="Team member" />
+            <h5 class="fw-bold">Samuel Kamau</h5>
+            <p class="text-muted">GIS Analyst</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-6 mb-4">
+          <h3 class="fw-bold">Our Mission</h3>
+          <p>
+            To enable faster, data-driven public health decisions by simplifying access to clean, actionable geospatial intelligence.
+          </p>
+        </div>
+        <div class="col-md-6 mb-4">
+          <h3 class="fw-bold">Our Vision</h3>
+          <p>
+            A healthier world where technology and data empower communities to anticipate, prevent, and respond to health threats.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-5 bg-light">
+    <div class="container text-center">
+      <h2 class="fw-bold mb-3">Interested in Collaborating?</h2>
+      <p>We're open to partnerships with researchers, health agencies, and developers.</p>
+      <a href="contact.html" class="btn btn-primary mt-3">Get in Touch</a>
+    </div>
+  </section>
+
+  <div id="footer-placeholder"></div>
+<script>
+  fetch("footer.html")
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("footer-placeholder").innerHTML = data;
+    });
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+<script>
+  // --- NEW: Header Fetch ---
+        fetch("header.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("header-placeholder").innerHTML = data;
+                // IMPORTANT: Call the initialization function after header is loaded
+                initializeHeaderScripts();
+            })
+            .catch(error => console.error('Error loading header:', error));
+
+        // --- Function to initialize header-dependent scripts ---
+        function initializeHeaderScripts() {
+            // Re-select elements because they were just added to the DOM
+            const loggedInUserSection = document.getElementById('loggedInUserSection');
+            const helloUserText = document.getElementById('helloUserText');
+            const signOutButton = document.getElementById('signOutButton');
+            const authLinksSection = document.getElementById('authLinksSection');
+            const registerLinkSection = document.getElementById('registerLinkSection');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeLabel = document.getElementById('themeLabel');
+            const htmlElement = document.documentElement; // This element always exists
+
+            // --- User Authentication & Sign-Out Logic ---
+            function checkLoginStatus() {
+                const authToken = localStorage.getItem('authToken');
+                const userData = localStorage.getItem('userData');
+                console.log('checkLoginStatus called.');
+                console.log('authToken:', authToken ? 'Present' : 'Not Present');
+                console.log('userData string from localStorage:', userData);
+
+                // Ensure elements exist before trying to manipulate them
+                if (!loggedInUserSection || !helloUserText || !authLinksSection || !registerLinkSection) {
+                    console.error("Header elements not found after dynamic load. Cannot check login status.");
+                    return;
+                }
+
+                if (authToken && userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        console.log('Parsed user object:', user);
+                        if (user && user.username) {
+                            helloUserText.innerHTML = `<i class="bi bi-person-circle me-1"></i> Hello, ${user.username}!`;
+                            loggedInUserSection.classList.add('d-flex');
+                            loggedInUserSection.classList.remove('d-none');
+                            authLinksSection.style.display = 'none';
+                            registerLinkSection.style.display = 'none';
+                        } else {
+                            console.warn("User data found but missing username or malformed. Clearing localStorage.");
+                            localStorage.removeItem('authToken');
+                            localStorage.removeItem('userData');
+                            loggedInUserSection.classList.add('d-none');
+                            loggedInUserSection.classList.remove('d-flex');
+                            authLinksSection.style.display = 'block';
+                            registerLinkSection.style.display = 'block';
+                        }
+                    } catch (e) {
+                        console.error("Failed to parse user data from localStorage:", e);
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('userData');
+                        loggedInUserSection.classList.add('d-none');
+                        loggedInUserSection.classList.remove('d-flex');
+                        authLinksSection.style.display = 'block';
+                        registerLinkSection.style.display = 'block';
+                    }
+                } else {
+                    console.log("Not logged in (no authToken or userData).");
+                    loggedInUserSection.classList.add('d-none');
+                    loggedInUserSection.classList.remove('d-flex');
+                    authLinksSection.style.display = 'block';
+                    registerLinkSection.style.display = 'block';
+                }
+            }
+
+            // Call checkLoginStatus within the initialization function
+            checkLoginStatus(); 
+
+            // Add event listener for sign-out button
+            if (signOutButton) {
+                signOutButton.addEventListener('click', () => {
+                    console.log('Sign Out button clicked!');
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userData');
+                    window.location.reload();
+                });
+            } else {
+                console.error('Sign Out button not found after header load!');
+            }
+
+
+            // --- Theme Toggle Script ---
+            function applyTheme(theme) {
+                htmlElement.setAttribute('data-bs-theme', theme);
+                if (theme === 'dark') {
+                    themeLabel.textContent = '🌙';
+                    themeToggle.checked = true;
+                } else {
+                    themeLabel.textContent = '☀️';
+                    themeToggle.checked = false;
+                }
+            }
+
+            // Load saved theme or default to light
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+
+            // Add event listener for theme toggle
+            if (themeToggle) {
+                 themeToggle.addEventListener('change', () => {
+                    const newTheme = htmlElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+                    applyTheme(newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+            } else {
+                console.error('Theme toggle not found after header load!');
+            }
+        }
+</script>
+</body>
+</html>

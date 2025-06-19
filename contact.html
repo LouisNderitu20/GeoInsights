@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Us | GeoInsights</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="cropped_circle_image (1).png" type="image/x-icon">
+  <style>
+    :root {
+      --gi-primary: #0f4c81;
+      --gi-accent: #1cc88a;
+      --gi-bg: #f8f9fc;
+      --gi-dark-bg: #121212;
+      --gi-dark-card: #1e1e1e;
+      --gi-font: 'Inter', sans-serif;
+    }
+
+    [data-bs-theme="dark"] {
+      --gi-primary: #0b3a60;
+    }
+
+    body {
+      font-family: var(--gi-font);
+      background-color: var(--gi-bg);
+      color: #212529;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    [data-bs-theme="dark"] body {
+      background-color: var(--gi-dark-bg);
+      color: #f1f1f1;
+    }
+
+    #mainNavbar {
+      background-color: var(--gi-primary);
+    }
+
+    .navbar-brand,
+    .nav-link {
+      color: #fff !important;
+    }
+
+    .form-check-label {
+      color: #fff;
+    }
+
+    .contact-section {
+      padding: 5rem 1rem;
+    }
+
+    .card {
+      border-radius: 1rem;
+      border: none;
+      background-color: #fff;
+      color: #212529;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    [data-bs-theme="dark"] .card {
+      background-color: var(--gi-dark-card);
+      color: #f1f1f1;
+    }
+
+    footer {
+      background-color: var(--gi-primary);
+      color: #fff;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="container">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Get in Touch</h2>
+        <p class="text-muted">We’d love to hear from you. Send us a message below.</p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card p-4 h-100">
+            <h5 class="fw-bold mb-3">Contact Information</h5>
+            <p><strong>Email:</strong> louisnderitu@gmail.com</p>
+            <p><strong>Phone:</strong> +254 712 345 678</p>
+            <p><strong>Address:</strong> 123 Health Lane, Nairobi, Kenya</p>
+            <p>Follow us on Twitter @GeoInsights or connect with us on LinkedIn.</p>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="card p-4 h-100">
+           <form action="contact.php" method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+        <!-- Google Map Embed -->
+        <div class="mb-4" style="height: 400px; border-radius: 12px; overflow: hidden;">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3979.956081141711!2d36.818531214319365!3d-1.2920653990580194!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f10d525f3b1c3%3A0xf36b8b0b16c0e8!2sNairobi%2C%20Kenya!5e0!3m2!1sen!2ske!4v1718617000200!5m2!1sen!2ske" 
+            width="100%" 
+            height="100%" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        </div>
+
+  <!-- Footer -->
+ <div id="footer-placeholder"></div>
+<script>
+  fetch("footer.html")
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("footer-placeholder").innerHTML = data;
+    });
+</script>
+
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // --- NEW: Header Fetch ---
+        fetch("header.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("header-placeholder").innerHTML = data;
+                // IMPORTANT: Call the initialization function after header is loaded
+                initializeHeaderScripts();
+            })
+            .catch(error => console.error('Error loading header:', error));
+
+        // --- Function to initialize header-dependent scripts ---
+        function initializeHeaderScripts() {
+            // Re-select elements because they were just added to the DOM
+            const loggedInUserSection = document.getElementById('loggedInUserSection');
+            const helloUserText = document.getElementById('helloUserText');
+            const signOutButton = document.getElementById('signOutButton');
+            const authLinksSection = document.getElementById('authLinksSection');
+            const registerLinkSection = document.getElementById('registerLinkSection');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeLabel = document.getElementById('themeLabel');
+            const htmlElement = document.documentElement; // This element always exists
+
+            // --- User Authentication & Sign-Out Logic ---
+            function checkLoginStatus() {
+                const authToken = localStorage.getItem('authToken');
+                const userData = localStorage.getItem('userData');
+                console.log('checkLoginStatus called.');
+                console.log('authToken:', authToken ? 'Present' : 'Not Present');
+                console.log('userData string from localStorage:', userData);
+
+                // Ensure elements exist before trying to manipulate them
+                if (!loggedInUserSection || !helloUserText || !authLinksSection || !registerLinkSection) {
+                    console.error("Header elements not found after dynamic load. Cannot check login status.");
+                    return;
+                }
+
+                if (authToken && userData) {
+                    try {
+                        const user = JSON.parse(userData);
+                        console.log('Parsed user object:', user);
+                        if (user && user.username) {
+                            helloUserText.innerHTML = `<i class="bi bi-person-circle me-1"></i> Hello, ${user.username}!`;
+                            loggedInUserSection.classList.add('d-flex');
+                            loggedInUserSection.classList.remove('d-none');
+                            authLinksSection.style.display = 'none';
+                            registerLinkSection.style.display = 'none';
+                        } else {
+                            console.warn("User data found but missing username or malformed. Clearing localStorage.");
+                            localStorage.removeItem('authToken');
+                            localStorage.removeItem('userData');
+                            loggedInUserSection.classList.add('d-none');
+                            loggedInUserSection.classList.remove('d-flex');
+                            authLinksSection.style.display = 'block';
+                            registerLinkSection.style.display = 'block';
+                        }
+                    } catch (e) {
+                        console.error("Failed to parse user data from localStorage:", e);
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('userData');
+                        loggedInUserSection.classList.add('d-none');
+                        loggedInUserSection.classList.remove('d-flex');
+                        authLinksSection.style.display = 'block';
+                        registerLinkSection.style.display = 'block';
+                    }
+                } else {
+                    console.log("Not logged in (no authToken or userData).");
+                    loggedInUserSection.classList.add('d-none');
+                    loggedInUserSection.classList.remove('d-flex');
+                    authLinksSection.style.display = 'block';
+                    registerLinkSection.style.display = 'block';
+                }
+            }
+
+            // Call checkLoginStatus within the initialization function
+            checkLoginStatus(); 
+
+            // Add event listener for sign-out button
+            if (signOutButton) {
+                signOutButton.addEventListener('click', () => {
+                    console.log('Sign Out button clicked!');
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userData');
+                    window.location.reload();
+                });
+            } else {
+                console.error('Sign Out button not found after header load!');
+            }
+
+
+            // --- Theme Toggle Script ---
+            function applyTheme(theme) {
+                htmlElement.setAttribute('data-bs-theme', theme);
+                if (theme === 'dark') {
+                    themeLabel.textContent = '🌙';
+                    themeToggle.checked = true;
+                } else {
+                    themeLabel.textContent = '☀️';
+                    themeToggle.checked = false;
+                }
+            }
+
+            // Load saved theme or default to light
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+
+            // Add event listener for theme toggle
+            if (themeToggle) {
+                 themeToggle.addEventListener('change', () => {
+                    const newTheme = htmlElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+                    applyTheme(newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+            } else {
+                console.error('Theme toggle not found after header load!');
+            }
+        }
+</script>
+</body>
+</html>

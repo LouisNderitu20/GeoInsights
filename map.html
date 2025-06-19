@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Map View | GeoInsights</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="icon" href="cropped_circle_image (1).png" type="image/x-icon">
+    <style>
+        :root {
+            --gi-primary: #0f4c81;
+            --gi-accent: #1cc88a;
+            --gi-bg: #f8f9fc;
+            --gi-card-bg: #ffffff;
+            --gi-text-color-light: #212529;
+            --gi-font: 'Inter', sans-serif;
+            --gi-dark-bg: #121212;
+            --gi-dark-card: #1e1e1e;
+            --gi-text-color-dark: #f1f1f1;
+        }
+
+        [data-bs-theme="dark"] {
+            --gi-primary: #0b3a60;
+        }
+
+        body {
+            font-family: var(--gi-font);
+            background-color: var(--gi-bg);
+            color: var(--gi-text-color-light);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin: 0;
+            scroll-behavior: smooth;
+        }
+
+        [data-bs-theme="dark"] body {
+            background-color: var(--gi-dark-bg);
+            color: var(--gi-text-color-dark);
+        }
+
+        #map {
+            position: relative;
+            height: 80vh;
+            border-radius: 0.75rem;
+            margin-top: 2rem;
+            overflow: hidden;
+        }
+
+        .filter-bar {
+            margin-top: 2rem;
+        }
+
+        .map-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: var(--gi-card-bg);
+            color: var(--gi-text-color-light);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 14px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        [data-bs-theme="dark"] .map-legend {
+            background-color: var(--gi-dark-card);
+            color: var(--gi-text-color-dark);
+        }
+
+        .legend-color {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+
+        .spinner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            transition: background-color 0.3s ease;
+        }
+
+        [data-bs-theme="dark"] .spinner-overlay {
+            background-color: rgba(18, 18, 18, 0.75);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+
+        #mainNavbar {
+            background-color: var(--gi-primary);
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar-brand,
+        .nav-link,
+        .form-check-label {
+            color: #fff !important;
+        }
+
+        .card {
+            background-color: var(--gi-card-bg);
+            color: var(--gi-text-color-light);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        [data-bs-theme="dark"] .card {
+            background-color: var(--gi-dark-card);
+            color: var(--gi-text-color-dark);
+        }
+
+        [data-bs-theme="dark"] .form-label,
+        [data-bs-theme="dark"] .form-select,
+        [data-bs-theme="dark"] .form-control {
+            color: var(--gi-text-color-dark);
+            background-color: var(--gi-dark-card);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        [data-bs-theme="dark"] .form-select option {
+            background-color: var(--gi-dark-card);
+            color: var(--gi-text-color-dark);
+        }
+        [data-bs-theme="dark"] .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23f1f1f1' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+        }
+    </style>
+</head>
+<body>
+
+  <div id="header-placeholder"></div>
+
+    <div class="container">
+        <div class="card p-4 shadow-sm mt-4 filter-bar">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label for="fileInput" class="form-label">Upload Data File (JSON/CSV)</label>
+                    <div class="input-group">
+                        <input class="form-control" type="file" id="fileInput" accept=".json,.csv" />
+                        <button class="btn btn-primary" type="button" id="uploadButton">Upload</button>
+                    </div>
+                    <small class="text-muted" id="uploadMessage"></small>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Region</label>
+                    <select class="form-select" id="regionFilter">
+                        <option value="All">All</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Density</label>
+                    <select class="form-select" id="densityFilter">
+                        <option value="All">All</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Vector</label>
+                    <select class="form-select" id="vectorFilter">
+                        <option value="All">All</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Year</label>
+                    <select class="form-select" id="yearFilter">
+                        <option value="All">All</option>
+                    </select>
+                </div>
+                <div class="col-12 mt-3 text-end">
+                    <button class="btn btn-outline-secondary" onclick="resetMapAndFilters()">Clear Map / Reset</button>
+                    <button class="btn btn-outline-success ms-2" onclick="exportFilteredCSV()">Export Filtered CSV</button>
+                    <button class="btn btn-outline-info ms-2" onclick="exportFilteredGeoJSON()">Export Filtered GeoJSON</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-relative">
+            <div class="spinner-overlay" id="mapSpinner">
+                <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+            </div>
+
+            <div id="map" class="shadow-sm">
+                <div class="map-legend" id="colorLegend">
+                    <h6 class="fw-bold mb-2">Vector Species Legend</h6>
+                    <ul class="list-unstyled mb-0" id="legendList"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <script>
+        // Load footer dynamically
+        fetch("footer.html")
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("footer-placeholder").innerHTML = data;
+            });
+    </script>
+<script>
+  // --- Header Fetch ---
+  fetch("header.html")
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("header-placeholder").innerHTML = data;
+        initializeHeaderScripts();
+    })
+    .catch(error => console.error('Error loading header:', error));
+
+  // --- Function to initialize header-dependent scripts ---
+  function initializeHeaderScripts() {
+      const loggedInUserSection = document.getElementById('loggedInUserSection');
+      const helloUserText = document.getElementById('helloUserText');
+      const signOutButton = document.getElementById('signOutButton');
+      const authLinksSection = document.getElementById('authLinksSection');
+      const registerLinkSection = document.getElementById('registerLinkSection');
+      const themeToggle = document.getElementById('themeToggle');
+      const themeLabel = document.getElementById('themeLabel');
+      const htmlElement = document.documentElement;
+
+      function checkLoginStatus() {
+          const authToken = localStorage.getItem('authToken');
+          const userData = localStorage.getItem('userData');
+          
+          if (!loggedInUserSection || !helloUserText || !authLinksSection || !registerLinkSection) {
+              console.error("Header elements not found after dynamic load.");
+              return;
+          }
+
+          if (authToken && userData) {
+              try {
+                  const user = JSON.parse(userData);
+                  if (user && user.username) {
+                      helloUserText.innerHTML = `<i class="bi bi-person-circle me-1"></i> Hello, ${user.username}!`;
+                      loggedInUserSection.classList.add('d-flex');
+                      loggedInUserSection.classList.remove('d-none');
+                      authLinksSection.style.display = 'none';
+                      registerLinkSection.style.display = 'none';
+                  } else {
+                      localStorage.removeItem('authToken');
+                      localStorage.removeItem('userData');
+                      loggedInUserSection.classList.add('d-none');
+                      loggedInUserSection.classList.remove('d-flex');
+                      authLinksSection.style.display = 'block';
+                      registerLinkSection.style.display = 'block';
+                  }
+              } catch (e) {
+                  localStorage.removeItem('authToken');
+                  localStorage.removeItem('userData');
+                  loggedInUserSection.classList.add('d-none');
+                  loggedInUserSection.classList.remove('d-flex');
+                  authLinksSection.style.display = 'block';
+                  registerLinkSection.style.display = 'block';
+              }
+          } else {
+              loggedInUserSection.classList.add('d-none');
+              loggedInUserSection.classList.remove('d-flex');
+              authLinksSection.style.display = 'block';
+              registerLinkSection.style.display = 'block';
+          }
+      }
+
+      if (signOutButton) {
+          signOutButton.addEventListener('click', () => {
+              localStorage.removeItem('authToken');
+              localStorage.removeItem('userData');
+              window.location.reload();
+          });
+      }
+
+      checkLoginStatus();
+
+      function applyTheme(theme) {
+          htmlElement.setAttribute('data-bs-theme', theme);
+          if (theme === 'dark') {
+              themeLabel.textContent = '🌙';
+              themeToggle.checked = true;
+          } else {
+              themeLabel.textContent = '☀️';
+              themeToggle.checked = false;
+          }
+      }
+
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      applyTheme(savedTheme);
+
+      if (themeToggle) {
+           themeToggle.addEventListener('change', () => {
+              const newTheme = htmlElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+              applyTheme(newTheme);
+              localStorage.setItem('theme', newTheme);
+          });
+      }
+  }
+</script>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const mapSpinner = document.getElementById('mapSpinner');
+        const fileInput = document.getElementById('fileInput');
+        const uploadButton = document.getElementById('uploadButton');
+        const uploadMessage = document.getElementById('uploadMessage');
+
+        // Filter elements
+        const regionSelect = document.getElementById('regionFilter');
+        const densitySelect = document.getElementById('densityFilter');
+        const vectorSelect = document.getElementById('vectorFilter');
+        const yearSelect = document.getElementById('yearFilter');
+
+        let map;
+        let markersGroup;
+        let markersData = []; // All data
+        let filteredMarkersData = []; // Filtered data
+        let currentGeoJsonLayer;
+        const usedColors = new Set();
+        const iconColors = {};
+
+        // Base map setup
+        function initializeMap() {
+            if (map) {
+                map.remove();
+            }
+            map = L.map('map').setView([-1.2921, 36.8219], 6);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            markersGroup = L.markerClusterGroup();
+            map.addLayer(markersGroup);
+        }
+
+        function updateLayerControl() {
+            if (map.layerControl) {
+                map.removeControl(map.layerControl);
+            }
+
+            const baseMaps = {
+                "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' })
+            };
+
+            const overlayMaps = {};
+            if (markersGroup && map.hasLayer(markersGroup)) {
+                overlayMaps["Vector Incidents"] = markersGroup;
+            }
+
+            map.layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+        }
+
+        function getColorForVector(vectorType) {
+            if (!iconColors[vectorType]) {
+                let newColor;
+                do {
+                    const hue = Math.floor(Math.random() * 360);
+                    newColor = `hsl(${hue}, 70%, 50%)`;
+                } while (usedColors.has(newColor));
+
+                iconColors[vectorType] = newColor;
+                usedColors.add(newColor);
+            }
+            return iconColors[vectorType];
+        }
+
+        function createCustomIcon(color) {
+            return L.divIcon({
+                html: `<div style="background-color: ${color}; width: 15px; height: 15px; border-radius: 50%;"></div>`,
+                className: 'custom-div-icon',
+                iconSize: [15, 15],
+                iconAnchor: [7.5, 7.5],
+                popupAnchor: [0, -10]
+            });
+        }
+
+        function updateLegend() {
+            const legendList = document.getElementById('legendList');
+            legendList.innerHTML = '';
+
+            const vectorTypes = new Set(filteredMarkersData.map(d => d.vector));
+            vectorTypes.forEach(type => {
+                const color = getColorForVector(type);
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `<span class="legend-color" style="background-color: ${color};"></span>${type}`;
+                legendList.appendChild(listItem);
+            });
+        }
+
+        function populateFilters() {
+            const regions = new Set(['All']);
+            const densities = new Set(['All']);
+            const vectors = new Set(['All']);
+            const years = new Set(['All']);
+
+            markersData.forEach(marker => {
+                if (marker.region) regions.add(marker.region);
+                if (marker.density) densities.add(marker.density);
+                if (marker.vector) vectors.add(marker.vector);
+                if (marker.year) years.add(marker.year.toString());
+            });
+
+            function populateSelect(selectElement, optionsSet) {
+                selectElement.innerHTML = '';
+                Array.from(optionsSet).sort().forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option;
+                    opt.textContent = option;
+                    selectElement.appendChild(opt);
+                });
+            }
+
+            populateSelect(regionSelect, regions);
+            populateSelect(densitySelect, densities);
+            populateSelect(vectorSelect, vectors);
+            populateSelect(yearSelect, years);
+        }
+
+        function renderMarkers(data) {
+            markersGroup.clearLayers();
+
+            data.forEach(marker => {
+                const color = getColorForVector(marker.vector);
+                const customIcon = createCustomIcon(color);
+                const m = L.marker([marker.latitude, marker.longitude], { icon: customIcon });
+
+                const popupContent = `
+                    <b>Region:</b> ${marker.region || 'N/A'}<br>
+                    <b>Density:</b> ${marker.density || 'N/A'}<br>
+                    <b>Vector:</b> ${marker.vector || 'N/A'}<br>
+                    <b>Year:</b> ${marker.year || 'N/A'}<br>
+                    <b>Description:</b> ${marker.description || 'N/A'}
+                `;
+                m.bindPopup(popupContent);
+                markersGroup.addLayer(m);
+            });
+
+            map.addLayer(markersGroup);
+            updateLayerControl();
+            mapSpinner.style.display = 'none';
+        }
+
+        function applyFilters() {
+            mapSpinner.style.display = 'flex';
+
+            const selectedRegion = regionSelect.value;
+            const selectedDensity = densitySelect.value;
+            const selectedVector = vectorSelect.value;
+            const selectedYear = yearSelect.value;
+
+            filteredMarkersData = markersData.filter(marker => {
+                const matchRegion = selectedRegion === 'All' || marker.region === selectedRegion;
+                const matchDensity = selectedDensity === 'All' || marker.density === selectedDensity;
+                const matchVector = selectedVector === 'All' || marker.vector === selectedVector;
+                const matchYear = selectedYear === 'All' || marker.year.toString() === selectedYear;
+                return matchRegion && matchDensity && matchVector && matchYear;
+            });
+
+            renderMarkers(filteredMarkersData);
+            updateLegend();
+        }
+
+        regionSelect.addEventListener('change', applyFilters);
+        densitySelect.addEventListener('change', applyFilters);
+        vectorSelect.addEventListener('change', applyFilters);
+        yearSelect.addEventListener('change', applyFilters);
+
+        fileInput.addEventListener('change', () => {
+            uploadMessage.textContent = '';
+            if (fileInput.files.length > 0) {
+                uploadMessage.textContent = `File selected: ${fileInput.files[0].name}`;
+            }
+        });
+
+        uploadButton.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) {
+                uploadMessage.textContent = 'Please select a file to upload.';
+                uploadMessage.className = 'text-danger';
+                return;
+            }
+
+            uploadMessage.textContent = 'Uploading...';
+            uploadMessage.className = 'text-info';
+            mapSpinner.style.display = 'flex';
+
+            const formData = new FormData();
+            formData.append('data_file', file);
+
+            const UPLOAD_URL = 'http://localhost/geoinsights/api/upload_data.php';
+
+            try {
+                const response = await fetch(UPLOAD_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    uploadMessage.textContent = result.message || 'File uploaded successfully!';
+                    uploadMessage.className = 'text-success';
+
+                    if (result.data) {
+                        markersData = result.data;
+                        filteredMarkersData = [...markersData];
+                        populateFilters();
+                        renderMarkers(filteredMarkersData);
+                        updateLegend();
+                    } else {
+                        mapSpinner.style.display = 'none';
+                    }
+                } else {
+                    const errorText = await response.text();
+                    uploadMessage.textContent = `Upload failed: ${errorText}`;
+                    uploadMessage.className = 'text-danger';
+                    mapSpinner.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error during file upload:', error);
+                uploadMessage.textContent = 'Network error or server unreachable.';
+                uploadMessage.className = 'text-danger';
+                mapSpinner.style.display = 'none';
+            }
+        });
+
+        function downloadFile(content, fileName, mimeType) {
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([content], { type: mimeType }));
+            a.setAttribute('download', fileName);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function exportFilteredCSV() {
+            if (filteredMarkersData.length === 0) {
+                alert('No data to export.');
+                return;
+            }
+
+            const headers = Object.keys(filteredMarkersData[0]).filter(key => key !== 'latitude' && key !== 'longitude');
+            const csvRows = [];
+            csvRows.push(headers.join(','));
+
+            filteredMarkersData.forEach(row => {
+                const values = headers.map(header => {
+                    const value = row[header];
+                    return (typeof value === 'string' && value.includes(',')) ? `"${value}"` : value;
+                });
+                csvRows.push(values.join(','));
+            });
+
+            const csvContent = csvRows.join('\n');
+            downloadFile(csvContent, 'geoinsights_data.csv', 'text/csv');
+        }
+
+        function exportFilteredGeoJSON() {
+            if (filteredMarkersData.length === 0) {
+                alert('No data to export.');
+                return;
+            }
+
+            const geoJsonFeatures = filteredMarkersData.map(item => ({
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [item.longitude, item.latitude]
+                },
+                properties: {
+                    region: item.region,
+                    density: item.density,
+                    vector: item.vector,
+                    year: item.year,
+                    description: item.description
+                }
+            }));
+
+            const geoJsonCollection = {
+                type: 'FeatureCollection',
+                features: geoJsonFeatures
+            };
+
+            const geoJsonString = JSON.stringify(geoJsonCollection, null, 2);
+            downloadFile(geoJsonString, 'geoinsights_data.geojson', 'application/json');
+        }
+
+        function resetMapAndFilters() {
+            mapSpinner.style.display = 'flex';
+            markersGroup.clearLayers();
+            map.removeLayer(markersGroup);
+            markersData = [];
+            filteredMarkersData = [];
+
+            regionSelect.innerHTML = '<option value="All">All</option>';
+            densitySelect.innerHTML = '<option value="All">All</option>';
+            vectorSelect.innerHTML = '<option value="All">All</option>';
+            yearSelect.innerHTML = '<option value="All">All</option>';
+
+            document.getElementById('legendList').innerHTML = '';
+            usedColors.clear();
+            Object.keys(iconColors).forEach(k => delete iconColors[k]);
+
+            fileInput.value = '';
+            uploadMessage.textContent = '';
+
+            initializeMap();
+            updateLayerControl();
+            map.setView([-1.2921, 36.8219], 6);
+
+            mapSpinner.style.display = 'none';
+            alert("Map cleared and reset to default empty state.");
+        }
+
+        // Initial map setup
+        initializeMap();
+        resetMapAndFilters();
+    </script>
+</body>
+</html>

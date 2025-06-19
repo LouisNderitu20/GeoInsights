@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login | GeoInsights</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="icon" href="cropped_circle_image (1).png" type="image/x-icon">
+    <style>
+        :root {
+            --gi-primary: #0f4c81;
+            --gi-bg: #f8f9fc;
+            --gi-card-bg: #ffffff;
+            --gi-text-color-light: #212529;
+            --gi-font: 'Inter', sans-serif;
+            --gi-dark-bg: #121212;
+            --gi-dark-card: #1e1e1e;
+            --gi-text-color-dark: #f1f1f1;
+        }
+        /* Dark mode overrides for custom variables */
+        [data-bs-theme="dark"] {
+            --gi-primary: #0b3a60;
+        }
+        body {
+            font-family: var(--gi-font);
+            background-color: var(--gi-bg);
+            color: var(--gi-text-color-light);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        /* Apply dark mode styles to body */
+        [data-bs-theme="dark"] body {
+            background-color: var(--gi-dark-bg);
+            color: var(--gi-text-color-dark);
+        }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px; /* This padding makes it look like a card */
+            border-radius: 0.75rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            background-color: var(--gi-card-bg);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        [data-bs-theme="dark"] .login-container {
+            background-color: var(--gi-dark-card);
+        }
+        .form-control, .btn {
+            border-radius: 0.5rem;
+        }
+        .btn-primary-custom {
+            background-color: var(--gi-primary);
+            border-color: var(--gi-primary);
+            color: #fff;
+        }
+        .btn-primary-custom:hover {
+            background-color: #0c3e6b; /* Slightly darker primary on hover */
+            border-color: #0c3e6b;
+        }
+        /* Override for dark mode form elements */
+        [data-bs-theme="dark"] .form-label,
+        [data-bs-theme="dark"] .form-control {
+            color: var(--gi-text-color-dark);
+            background-color: var(--gi-dark-card);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        /* Theme toggle position on these dedicated pages */
+        .theme-toggle-wrapper {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle-wrapper">
+        <div class="form-check form-switch ms-2">
+            <input class="form-check-input" type="checkbox" id="themeToggle" />
+            <label class="form-check-label ms-2" for="themeToggle" id="themeLabel">☀️</label>
+        </div>
+    </div>
+
+    <div class="login-container text-center">
+        <div class="text-center mb-4">
+            <img src="cropped_circle_image (1).png" alt="GeoInsights Logo" style="height: 80px; width: auto;">
+        </div>
+        <h2 class="mb-4">Login to Account</h2>
+        <form id="loginForm">
+            <div class="mb-3 text-start">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" required>
+            </div>
+            <div class="mb-4 text-start">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary-custom">Login</button>
+            </div>
+            <p class="mt-3">Don't have an account? <a href="register.html">Register here</a></p>
+            <div id="message" class="mt-3"></div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('message');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (username === '' || password === '') {
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.textContent = 'Username and password are required.';
+                return;
+            }
+
+            const backendLoginUrl = 'http://localhost/geoinsights/api/login.php'; // Correct path
+
+            try {
+                const response = await fetch(backendLoginUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+                console.log('Login API Response:', data); // Log the full response
+
+                if (response.ok && data.success) {
+                    localStorage.setItem('authToken', data.token);
+                    // --- Crucial: Store the user object which should contain 'username' ---
+                    if (data.user) {
+                        localStorage.setItem('userData', JSON.stringify(data.user));
+                        console.log('userData stored:', data.user);
+                    } else {
+                        console.warn('Login successful but no user data returned. Storing a default username.');
+                        // Fallback in case backend doesn't return user object
+                        localStorage.setItem('userData', JSON.stringify({ username: username }));
+                    }
+
+                    messageDiv.className = 'alert alert-success';
+                    messageDiv.textContent = data.message || 'Login successful! Redirecting...';
+                    setTimeout(() => {
+                        window.location.href = 'index.html'; // Redirect to index.html
+                    }, 1000);
+                } else {
+                    messageDiv.className = 'alert alert-danger';
+                    messageDiv.textContent = data.message || 'Invalid username or password.';
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                messageDiv.className = 'alert alert-danger';
+                messageDiv.textContent = 'Network error or server unavailable. Ensure XAMPP Apache is running and backend is configured.';
+            }
+        });
+
+        // --- Theme Toggle Script (for consistency) ---
+        const themeToggle = document.getElementById('themeToggle');
+        const themeLabel = document.getElementById('themeLabel');
+        const htmlElement = document.documentElement;
+
+        function applyTheme(theme) {
+            htmlElement.setAttribute('data-bs-theme', theme);
+            themeLabel.textContent = theme === 'dark' ? '🌙' : '☀️';
+            themeToggle.checked = theme === 'dark';
+        }
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        applyTheme(savedTheme);
+
+        themeToggle.addEventListener('change', () => {
+            const newTheme = htmlElement.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+    </script>
+</body>
+</html>

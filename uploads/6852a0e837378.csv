@@ -1,0 +1,11 @@
+name,country,latitude,longitude,vector,year,density,status,temperature,rainfall
+Nairobi Site A,Kenya,-1.286389,36.817223,Anopheles gambiae,2023,High,Active,25.5,80
+Mombasa Site B,Kenya,-4.054657,39.663081,Aedes aegypti,2024,Medium,Under Observation,28.1,120
+Kisumu Site C,Kenya,-0.091702,34.767909,Culex pipiens,2023,Low,Inactive,24,65
+Arusha Site D,Tanzania,-3.386882,36.682977,Anopheles funestus,2024,High,Active,26.8,95
+Kampala Site E,Uganda,0.347596,32.58252,Aedes albopictus,2023,Medium,Under Observation,27.5,110
+Addis Ababa Site F,Ethiopia,9.022736,38.746794,Glossina palpalis,2024,Low,Inactive,22,50
+Kigali Site G,Rwanda,-1.940278,29.873888,Anopheles stephensi,2023,High,Active,23.8,70
+Juba Site H,South Sudan,4.851659,31.603099,Mansonia uniformis,2024,Medium,Under Observation,30,130
+Mogadishu Site I,Somalia,2.046934,45.318162,Phlebotomus papatasi,2023,Low,Inactive,32,30
+Bujumbura Site J,Burundi,-3.3703,29.3238,Simulium damnosum,2024,High,Active,26,85

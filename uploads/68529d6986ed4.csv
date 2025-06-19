@@ -1,0 +1,3 @@
+name,latitude,longitude,vector,year,density,status,temperature,rainfall,country
+Site A,-1.2921,36.8219,Anopheles,2022,High,Active,28,125,Kenya
+Site B,0.3476,32.5825,Culex,2023,Medium,Inactive,26,80,Uganda
